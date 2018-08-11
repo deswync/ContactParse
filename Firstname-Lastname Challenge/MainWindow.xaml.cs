@@ -32,14 +32,17 @@ namespace Firstname_Lastname_Challenge
             InitializeComponent();
         }
 
-        private void openButton_Click(object sender, RoutedEventArgs e)
+        private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
+            //opens file dialog and only accept text files
             OpenFileDialog infoDialog = new OpenFileDialog();
             infoDialog.Filter = "Text Document|*.txt";
             infoDialog.DefaultExt = ".txt";
             Nullable<bool> dialogOk = infoDialog.ShowDialog();
 
             fileLocation.Text = infoDialog.FileName;
+            
+            //display raw text information on left side 
             rawInfoTextBlock.Text = File.ReadAllText(fileLocation.Text);
 
             BusinessCardParser(rawInfoTextBlock.Text);
@@ -47,9 +50,11 @@ namespace Firstname_Lastname_Challenge
 
         private void BusinessCardParser(string contact)
         {
+            //seperate each line from text file and add them to a new string array
             string[] stringSeperators = new string[] { "\n" };
             string[] contactLine = contact.Split(stringSeperators, StringSplitOptions.RemoveEmptyEntries);
 
+            //contact name is usually on the first 3 lines, filter out lines that don't contain anything "name-y"
             for (int i = 0; i < 3; i++)
             {
                 if(!contactLine[i].Contains("Technology") && !contactLine[i].Contains("Technologies") && !contactLine[i].Contains("Systems")
@@ -61,6 +66,7 @@ namespace Firstname_Lastname_Challenge
 
             foreach (string line in contactLine)
             {
+                //filter
                 if(line.Contains("Phone") || line.Contains("Tel") || line.Contains("(") || Regex.IsMatch(line, @"^-?\d+$"))
                 {
                     phoneNum = line;  
@@ -76,6 +82,7 @@ namespace Firstname_Lastname_Challenge
             ShowEmail(email);
         }
 
+        //populate right side's fields
         private void ShowName(string name)
         {
             nameTextBlock.Text = name;
@@ -83,6 +90,7 @@ namespace Firstname_Lastname_Challenge
 
         private void ShowPhoneNumber(string num)
         {
+            //correctly format phone number
             phoneTextBlock.Text = Regex.Replace(num, @"[^\d]", "");
         }
         private void ShowEmail(string email)
